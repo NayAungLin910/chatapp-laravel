@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,4 +33,20 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+});
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/chat', function () {
+        return Inertia::render('Chat/Container');
+    })->name('chat');
+});
+
+Route::prefix('chat')->as('chat.')->middleware('auth:sanctum')->group(function () {
+    Route::get('/rooms', [ChatController::class, 'rooms'])->name('rooms');
+    Route::get('/room/{roomId}/messages', [ChatController::class, 'messages'])->name('messages');
+    Route::post('/room/{roomId}/message', [ChatController::class, 'newMessage'])->name('message'); // post new message
 });
