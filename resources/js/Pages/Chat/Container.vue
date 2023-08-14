@@ -1,5 +1,34 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
+import MessageContainer from './MessageContainer.vue';
+import InputMessage from './InputMessage.vue';
+import axios from 'axios';
+import { ref } from 'vue';
+
+const chatRooms = ref([]);
+const currentRoom = ref([]);
+const messages = ref([]);
+
+const getRoom = () => {
+    axios.get('/chat/rooms')
+        .then((response) => {
+            chatRooms.value = response.data;
+            setRoom(response.data[0])
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+}
+
+const setRoom = (room) => {
+    currentRoom.value = room;
+}
+
+// no ned to call this function inside in created() since
+// setup runs beforeCreate and created lifecycle
+// https://stackoverflow.com/questions/64897835/what-is-an-equivalent-of-created-in-the-vue-js-composition-api
+getRoom()
+
 </script>
 
 <template>
@@ -13,7 +42,8 @@ import AppLayout from '@/Layouts/AppLayout.vue';
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    Container
+                    <MessageContainer />
+                    <InputMessage />
                 </div>
             </div>
         </div>
