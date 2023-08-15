@@ -22,6 +22,17 @@ const getRoom = () => {
 
 const setRoom = (room) => {
     currentRoom.value = room;
+    getMessages()
+}
+
+const getMessages = () => {
+    axios.get('/chat/room/' + currentRoom.value.id + '/messages')
+        .then((response) => {
+            messages.value = response.data;
+        })
+        .catch((error) => {
+            console.log(error)
+        })
 }
 
 // no ned to call this function inside in created() since
@@ -43,7 +54,7 @@ getRoom()
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <MessageContainer />
-                    <InputMessage />
+                    <InputMessage :room="currentRoom" />
                 </div>
             </div>
         </div>
