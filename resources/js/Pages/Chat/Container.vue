@@ -6,10 +6,10 @@ import axios from 'axios';
 import { ref } from 'vue';
 
 const chatRooms = ref([]);
-const currentRoom = ref([]);
+const currentRoom = ref({});
 const messages = ref([]);
 
-const getRoom = () => {
+const getRooms = () => {
     axios.get('/chat/rooms')
         .then((response) => {
             chatRooms.value = response.data;
@@ -21,14 +21,14 @@ const getRoom = () => {
 }
 
 const setRoom = (room) => {
-    currentRoom.value = room;
+    currentRoom.value = room
     getMessages()
 }
 
 const getMessages = () => {
-    axios.get('/chat/room/' + currentRoom.value.id + '/messages')
+    axios.get(`/chat/room/${currentRoom.value.id}/messages`)
         .then((response) => {
-            messages.value = response.data;
+            messages.value = response.data
         })
         .catch((error) => {
             console.log(error)
@@ -38,7 +38,7 @@ const getMessages = () => {
 // no ned to call this function inside in created() since
 // setup runs beforeCreate and created lifecycle
 // https://stackoverflow.com/questions/64897835/what-is-an-equivalent-of-created-in-the-vue-js-composition-api
-getRoom()
+getRooms()
 
 </script>
 
@@ -54,7 +54,7 @@ getRoom()
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <MessageContainer />
-                    <InputMessage :room="currentRoom" />
+                    <InputMessage @message-sent="getMessages" :room="currentRoom" />
                 </div>
             </div>
         </div>
