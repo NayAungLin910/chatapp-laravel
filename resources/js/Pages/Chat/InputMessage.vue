@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ref } from 'vue';
 
 const props = defineProps(['room'])
-const emit = defineEmits(['messageSent'])
+const emit = defineEmits(['messageSent', 'look'])
 
 const message = ref('')
 
@@ -16,10 +16,9 @@ function sendMessage() {
         message: message.value
     })
         .then((response) => {
-            if (response.status == 201) {
-                message.value = ''
-                emit('messageSent')
-            }
+            message.value = ''
+            emit('messageSent')
+            emit('look')
         })
         .catch((error) => {
             console.log(error)
